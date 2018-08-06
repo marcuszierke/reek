@@ -35,9 +35,12 @@ RSpec.describe Reek::Configuration::ConfigurationFileFinder do
     it 'skips files ending in .reek.yml in current dir' do
       Dir.mktmpdir(nil, regular_configuration_dir) do |tempdir|
         current = Pathname.new(tempdir)
+        # Unlike CRuby's implementation, JRuby's mktmpdir always returns an
+        # absolute path. Ensure current is a relative path on all Rubies.
+        current = current.relative_path_from(Pathname.pwd) if current.absolute?
         bad_config = current.join('ignoreme.reek.yml')
         FileUtils.touch bad_config
-        found = described_class.find(current: Pathname.new(tempdir))
+        found = described_class.find(current: current)
         expect(found).to eq(regular_configuration_file)
       end
     end
