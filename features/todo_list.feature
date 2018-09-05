@@ -23,10 +23,10 @@ Feature: Auto-generate a todo file
     And it reports:
       """
 
-      '.todo.reek' generated! You can now use this as a starting point for your configuration.
+      '.reek.yml' generated! You can now use this as a starting point for your configuration.
       """
-    And a file named ".todo.reek" should exist
-    And the file ".todo.reek" should contain:
+    And a file named ".reek.yml" should exist
+    And the file ".reek.yml" should contain:
       """
       ---
       detectors:
@@ -37,22 +37,22 @@ Feature: Auto-generate a todo file
           exclude:
           - Smelly#x
       """
-    When I run reek -c .todo.reek smelly.rb
+    When I run reek -c .reek.yml smelly.rb
     Then it succeeds
 
   Scenario: Reacts appropiately when there are no smells
     Given the clean file 'clean.rb'
     When I run reek --todo clean.rb
-    Then a file named ".todo.reek" should not exist
+    Then a file named ".reek.yml" should not exist
     And it reports:
       """
 
-      '.todo.reek' not generated because there were no smells found!
+      '.reek.yml' not generated because there were no smells found!
       """
 
-  Scenario: Mercilessly overwrite existing .todo.reek files
+  Scenario: Add todo configuration to existing .reek.yml
     Given the smelly file 'smelly.rb'
-    And a file named ".todo.reek" with:
+    And a file named ".reek.yml" with:
       """
       ---
       detectors:
@@ -61,7 +61,7 @@ Feature: Auto-generate a todo file
         UncommunicativeMethodName:
           enabled: false
       """
-    When I run reek -c .todo.reek smelly.rb
+    When I run reek -c .reek.yml smelly.rb
     Then it reports:
       """
       smelly.rb -- 1 warning:
@@ -69,7 +69,7 @@ Feature: Auto-generate a todo file
       """
     When I run reek --todo smelly.rb
     Then it succeeds
-    When I run reek -c .todo.reek smelly.rb
+    When I run reek -c .reek.yml smelly.rb
     Then it reports nothing
 
   Scenario: Ignore existing other configuration files that are passed explicitly
@@ -91,5 +91,5 @@ Feature: Auto-generate a todo file
       """
     When I run reek -c config.reek --todo smelly.rb
     Then it succeeds
-    When I run reek -c .todo.reek smelly.rb
+    When I run reek -c config.reek smelly.rb
     Then it reports nothing

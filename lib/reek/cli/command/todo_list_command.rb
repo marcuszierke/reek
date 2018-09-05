@@ -3,6 +3,7 @@
 require_relative 'base_command'
 require_relative '../../examiner'
 require_relative '../../configuration/app_configuration'
+require_relative '../../configuration/configuration_file_finder'
 
 module Reek
   module CLI
@@ -12,16 +13,16 @@ module Reek
       # file that can serve as a todo list.
       #
       class TodoListCommand < BaseCommand
-        FILE_NAME = '.todo.reek'
+        DEFAULT_FILE_NAME = Configuration::ConfigurationFileFinder::DEFAULT_FILE_NAME
 
         def execute
           if smells.empty?
-            puts "\n'.todo.reek' not generated because "\
+            puts "\n'#{DEFAULT_FILE_NAME}' not generated because "\
                     'there were no smells found!'
           else
-            File.write FILE_NAME,
+            File.write DEFAULT_FILE_NAME,
                        { Configuration::AppConfiguration::DETECTORS_KEY => groups }.to_yaml
-            puts "\n'.todo.reek' generated! You can now use "\
+            puts "\n'#{DEFAULT_FILE_NAME}' generated! You can now use "\
                     'this as a starting point for your configuration.'
           end
           options.success_exit_code

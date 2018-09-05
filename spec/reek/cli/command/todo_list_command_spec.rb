@@ -19,14 +19,14 @@ RSpec.describe Reek::CLI::Command::TodoListCommand do
     end
 
     before do
-      allow(File).to receive(:write).with(described_class::FILE_NAME, String)
+      allow(File).to receive(:write).with(described_class::DEFAULT_FILE_NAME, String)
     end
 
     context 'when smells are found' do
       let(:source_file) { SMELLY_FILE }
 
       it 'shows a proper message' do
-        expected = "\n'.todo.reek' generated! You can now use this as a starting point for your configuration.\n"
+        expected = "\n'.reek.yml' generated! You can now use this as a starting point for your configuration.\n"
         expect { command.execute }.to output(expected).to_stdout
       end
 
@@ -42,7 +42,7 @@ RSpec.describe Reek::CLI::Command::TodoListCommand do
           { 'UncommunicativeMethodName' => { 'exclude' => ['Smelly#x'] },
             'UncommunicativeVariableName' => { 'exclude' => ['Smelly#x'] } }
         }.to_yaml
-        expect(File).to have_received(:write).with(described_class::FILE_NAME, expected_yaml)
+        expect(File).to have_received(:write).with(described_class::DEFAULT_FILE_NAME, expected_yaml)
       end
     end
 
@@ -50,7 +50,7 @@ RSpec.describe Reek::CLI::Command::TodoListCommand do
       let(:source_file) { CLEAN_FILE }
 
       it 'shows a proper message' do
-        expected = "\n'.todo.reek' not generated because there were no smells found!\n"
+        expected = "\n'.reek.yml' not generated because there were no smells found!\n"
         expect { command.execute }.to output(expected).to_stdout
       end
 
